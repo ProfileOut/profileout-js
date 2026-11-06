@@ -120,37 +120,6 @@ try {
 
 The optional `baseUrl` defaults to `https://api.profileout.com`. HTTPS is required except on localhost; redirects are rejected so credentials and paid requests cannot be forwarded.
 
-## Publishing to npm (maintainers)
-
-Publishing is automated by [`.github/workflows/publish.yml`](.github/workflows/publish.yml). A published, non-prerelease GitHub Release triggers checks and then publishes to npm using Trusted Publishing (OIDC). No npm token or interactive login is needed in GitHub Actions.
-
-### One-time setup
-
-1. Push the workflow to `ProfileOut/profileout-js`.
-2. In the repository's **Settings → Environments**, create an environment named `npm`. Leave required reviewers unset for automatic publishing; adding reviewers makes each release wait for approval.
-3. On the [npm package page](https://www.npmjs.com/package/profileout), open **Settings → Trusted publishing**, select **GitHub Actions**, and enter:
-
-| Setting | Value |
-| --- | --- |
-| Organization or user | `ProfileOut` |
-| Repository | `profileout-js` |
-| Workflow filename | `publish.yml` |
-| Environment name | `npm` |
-| Allowed actions | Enable **npm publish** (direct publishing) |
-
-Use only the workflow filename, not its directory path. No GitHub Actions secret is required. See the [official npm Trusted Publishing guide](https://docs.npmjs.com/trusted-publishers/).
-
-### Publish a release
-
-1. Change `version` in `package.json` to an unused stable version, for example `0.1.1`.
-2. Commit and push the version, code, README, and workflow changes.
-3. In this repository's **Releases → Draft a new release**, create the matching tag, for example `v0.1.1`, on that commit. Leave **Set as a pre-release** unchecked, then click **Publish release**.
-4. Check the **Publish to npm** workflow in Actions and confirm the version on [npm](https://www.npmjs.com/package/profileout).
-
-The workflow requires an exact `vMAJOR.MINOR.PATCH` tag matching `package.json`. It checks syntax, imports, and package contents before publishing. It runs on GitHub-hosted Ubuntu with Node.js 24 and its bundled npm; the SDK still supports Node.js 22+. No SDK dependency installation or compilation is needed.
-
-A push or tag push alone does not publish. Draft releases and prereleases do not publish. Publishing a release does not bump the package version automatically. Published versions cannot be overwritten; README updates also need a new package version. If authentication fails before upload, finish Trusted Publishing setup and rerun the failed workflow.
-
 ## API compatibility
 
 Targets the ProfileOut v1 public API. When that contract changes, review both SDKs against the service's OpenAPI specification and update request/response types and examples together.
