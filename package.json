@@ -1,0 +1,50 @@
+{
+  "name": "profileout",
+  "version": "0.1.0",
+  "description": "Official JavaScript and TypeScript SDK for the ProfileOut API",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node --check index.js",
+    "prepublishOnly": "npm run check"
+  },
+  "license": "MIT",
+  "author": "ProfileOut",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProfileOut/profileout-js.git"
+  },
+  "homepage": "https://docs.profileout.com",
+  "bugs": {
+    "url": "https://github.com/ProfileOut/profileout-js/issues"
+  },
+  "keywords": [
+    "profileout",
+    "sdk",
+    "people-data",
+    "resume-parsing",
+    "contact-enrichment",
+    "people-search"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
