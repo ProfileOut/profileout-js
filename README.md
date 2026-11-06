@@ -10,8 +10,6 @@ Requires Node.js 22 or newer. ESM only. No runtime dependencies. Use this SDK on
 npm install profileout
 ```
 
-The installation command above becomes available after the first npm publication. Until then, install a local checkout with `npm install /path/to/profileout-js`.
-
 ## Quick start
 
 Get an API key from the [ProfileOut console](https://console.profileout.com). The account must be active and email-verified, with sufficient credits.
@@ -124,24 +122,34 @@ The optional `baseUrl` defaults to `https://api.profileout.com`. HTTPS is requir
 
 ## Publishing to npm (maintainers)
 
-Package name: `profileout`. Initial version: `0.1.0`. This repository is ready to package, but no registry account or package is created by cloning it.
+Publishing is automated by [`.github/workflows/publish.yml`](.github/workflows/publish.yml). A published, non-prerelease GitHub Release triggers checks and then publishes to npm using Trusted Publishing (OIDC). No npm token or interactive login is needed in GitHub Actions.
 
-1. [Create an npm account](https://www.npmjs.com/signup), verify your email, and enable two-factor authentication.
-2. Check that you can publish the name. `npm view profileout name` returns E404 before the first publication; if the name belongs to someone else, change `name` in `package.json` and the installation/import examples.
-3. From this repository:
+### One-time setup
 
-```sh
-npm run check
-npm pack --dry-run
-npm login --registry=https://registry.npmjs.org/
-npm publish --access public
-```
+1. Push the workflow to `ProfileOut/profileout-js`.
+2. In the repository's **Settings → Environments**, create an environment named `npm`. Leave required reviewers unset for automatic publishing; adding reviewers makes each release wait for approval.
+3. On the [npm package page](https://www.npmjs.com/package/profileout), open **Settings → Trusted publishing**, select **GitHub Actions**, and enter:
 
-No dependency installation or compilation is required to publish. The package allowlist includes only `index.js`, `index.d.ts`, `README.md`, and `LICENSE`, plus npm's required `package.json`.
+| Setting | Value |
+| --- | --- |
+| Organization or user | `ProfileOut` |
+| Repository | `profileout-js` |
+| Workflow filename | `publish.yml` |
+| Environment name | `npm` |
+| Allowed actions | Enable **npm publish** (direct publishing) |
 
-Confirm publication with `npm view profileout version`. Later releases need a new version in `package.json`; an existing name/version cannot be reused. The files that are published become public. Never put credentials in this repository.
+Use only the workflow filename, not its directory path. No GitHub Actions secret is required. See the [official npm Trusted Publishing guide](https://docs.npmjs.com/trusted-publishers/).
 
-See the [official npm publishing guide](https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages/).
+### Publish a release
+
+1. Change `version` in `package.json` to an unused stable version, for example `0.1.1`.
+2. Commit and push the version, code, README, and workflow changes.
+3. In this repository's **Releases → Draft a new release**, create the matching tag, for example `v0.1.1`, on that commit. Leave **Set as a pre-release** unchecked, then click **Publish release**.
+4. Check the **Publish to npm** workflow in Actions and confirm the version on [npm](https://www.npmjs.com/package/profileout).
+
+The workflow requires an exact `vMAJOR.MINOR.PATCH` tag matching `package.json`. It checks syntax, imports, and package contents before publishing. It runs on GitHub-hosted Ubuntu with Node.js 24 and its bundled npm; the SDK still supports Node.js 22+. No SDK dependency installation or compilation is needed.
+
+A push or tag push alone does not publish. Draft releases and prereleases do not publish. Publishing a release does not bump the package version automatically. Published versions cannot be overwritten; README updates also need a new package version. If authentication fails before upload, finish Trusted Publishing setup and rerun the failed workflow.
 
 ## API compatibility
 
